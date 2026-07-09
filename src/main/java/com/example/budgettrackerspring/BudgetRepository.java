@@ -1,4 +1,6 @@
 package com.example.budgettrackerspring;
 
-public class BudgetRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface BudgetRepository extends JpaRepository<BudgetEntry, Long> {
 }
