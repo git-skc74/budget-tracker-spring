@@ -1,9 +1,6 @@
 package com.example.budgettrackerspring;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +30,17 @@ public class BudgetController {
         repository.save(entry);
 
         return "added: " + amount;
+    }
+
+    @DeleteMapping("/entry/{id}")
+    public String deleteEntry(@PathVariable Long id) {
+        if (repository.existsById(id)) {
+            repository.deleteById(id);
+            return "deleted: " + id;
+        }
+        else {
+            return "not found: " + id;
+        }
     }
 
     @GetMapping("/history")
