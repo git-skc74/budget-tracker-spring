@@ -23,13 +23,16 @@ public class BudgetController {
     }
 
     @PostMapping("/entry") // execute when requested: POST /entry?amount=INT
-    public String addEntry(@RequestParam int amount) {
+    public String addEntry(@RequestParam int amount, @RequestParam(required = false) String category) {
         // @RequestParam takes the value of amount in url as int
         BudgetEntry entry = new BudgetEntry();
         entry.setAmount(amount);
+        if (category != null && !category.isEmpty()) {
+            entry.setCategory(category);
+        }
         repository.save(entry);
 
-        return "added: " + amount;
+        return "added: " + amount + "\ncategory: " + category;
     }
 
     @DeleteMapping("/entry/{id}")
@@ -62,10 +65,13 @@ public class BudgetController {
         List<String> newBook = new ArrayList<>();
         for (BudgetEntry entry : entries) {
             int amount = entry.getAmount();
+            String category = entry.getCategory();
+            // display only if category exists
+            String categoryStr = (category != null) ? " [" + category + "]" : "";
             if (amount > 0) {
-                newBook.add("Income: " + amount);
+                newBook.add("Income: " + amount + categoryStr);
             } else if (amount < 0) {
-                newBook.add("Expense: " + Math.abs(amount));
+                newBook.add("Expense: " + Math.abs(amount) + categoryStr);
             }
         }
         return newBook;
