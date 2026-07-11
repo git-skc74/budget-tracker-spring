@@ -23,7 +23,8 @@ public class BudgetController {
     }
 
     @PostMapping("/entry") // execute when requested: POST /entry?amount=INT
-    public String addEntry(@RequestParam int amount, @RequestParam(required = false) String category) {
+    public String addEntry(@RequestParam int amount,
+                           @RequestParam(required = false) String category) {
         // @RequestParam takes the value of amount in url as int
         BudgetEntry entry = new BudgetEntry();
         entry.setAmount(amount);
@@ -44,6 +45,36 @@ public class BudgetController {
         else {
             return "not found: " + id;
         }
+    }
+
+    @PutMapping("/entry/{id}")
+    public String updateEntry(@PathVariable Long id,
+                              @RequestParam(required = false) Integer amount,
+                              @RequestParam(required = false) String category) {
+        // use Integer for null check
+        // StringBuilder - using append
+        StringBuilder sb = new StringBuilder("requested id: " + id + "\n");
+        repository.findById(id).ifPresentOrElse(
+                // if data (= entry) presents
+                entry -> {
+                    if (amount != null) {
+                        entry.setAmount(amount);
+                        sb.append("amount updated: ").append(amount).append("\n");
+                    } else { sb.append("no amount entered\n"); }
+                    if (category != null && !category.isEmpty()) {
+                        entry.setCategory(category);
+                        sb.append("category updated: ").append(category);
+                    } else { sb.append("no category entered"); }
+                    repository.save(entry);
+                },
+
+                // if data does not exist
+                () -> {
+                    sb.setLength(0); // empty StringBuilder
+                    sb.append("not found: ").append(id);
+                }
+        );
+        return sb.toString();
     }
 
     @GetMapping("/history")
