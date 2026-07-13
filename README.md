@@ -28,4 +28,5 @@ Started from a [console-based Java app](https://github.com/git-skc74/budget-trac
 - Spring Data JPA
 - MySQL
 - Gradle
+- Global exception handling (`@RestControllerAdvice`)
 - Swagger UI
